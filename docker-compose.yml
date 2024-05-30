@@ -1,0 +1,33 @@
+services:
+  postgres:
+    container_name: ${PROJECT_NAME}-postgres
+    build:
+      context: ./docker/services/postgresql
+    ports:
+      - "${POSTGRES_PORT}:${POSTGRES_PORT}"
+    environment:
+      POSTGRES_HOST: ${POSTGRES_HOST}
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      PGGATA: ${POSTGRES_DATA}
+    volumes:
+      - ${PWD}/docker/volumes/postgresql:${POSTGRES_DATA}
+
+  server:
+    container_name: ${PROJECT_NAME}-server
+    build:
+      context: .
+    ports:
+      - "${SERVER_PORT}:${SERVER_PORT}"
+      - "${PRISMA_STUDIO_PORT}:${PRISMA_STUDIO_PORT}"
+      - "9240:9240" # debug server port
+    environment:
+      NODE_ENV: ${PROJECT_ENVIRONMENT}
+      SERVER_PORT: ${SERVER_PORT}
+    volumes:
+      - ${PWD}:/home/node/project
+    depends_on:
+      postgres:
+        condition: service_started
+    command: [ "npm", "run", "start:dev" ]
