@@ -8,4 +8,4 @@ RUN mkdir /home/node/project
 
 WORKDIR /home/node/project
 
-CMD ["npm", "run", "start:dev"]
+CMD ["npm", "run", "dev"]
