@@ -27,10 +27,15 @@ export class PrismaLinkRepository implements LinkRepository {
     return links.map(PrismaLinkMapper.toDomain)
   }
 
-  async updateLinkURL(linkId: string, urlOrigin: string): Promise<void> {
+  async updateLinkURL(
+    linkId: string,
+    urlOrigin: string,
+    userId: string,
+  ): Promise<void> {
     await this.prismaService.link.update({
       where: {
         id: linkId,
+        userId,
       },
       data: {
         urlOrigin,
@@ -69,5 +74,15 @@ export class PrismaLinkRepository implements LinkRepository {
         },
       })
     }
+  }
+
+  async countByHash(hash: string): Promise<number> {
+    const count = await this.prismaService.link.count({
+      where: {
+        urlHash: hash,
+      },
+    })
+
+    return count
   }
 }

@@ -1,12 +1,34 @@
-import { Body, Controller, Get, Param, Post, Put } from '@nestjs/common'
-import { ApiOperation, ApiTags } from '@nestjs/swagger'
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Param,
+  Post,
+  Put,
+  Req,
+  UseGuards,
+} from '@nestjs/common'
+import {
+  ApiBearerAuth,
+  ApiCreatedResponse,
+  ApiForbiddenResponse,
+  ApiNoContentResponse,
+  ApiOkResponse,
+  ApiOperation,
+  ApiTags,
+} from '@nestjs/swagger'
 
 import { FindAllLinksUser } from '@/app/link/useCases/find-all-links-user.useCase'
 import { ShortenerLink } from '@/app/link/useCases/shortner-link.useCase'
 import { UpdateLink } from '@/app/link/useCases/update-link.useCase'
 
+import { AuthGuard, RequestWithUser } from '../auth/guards/auth.guard'
+import { OptionalAuthGuard } from '../auth/guards/opcional-auth.guard'
 import { GenerateHashLinkDto } from './dtos/generete-hash-link.dto'
 import { UpdateLinkDto } from './dtos/update-link.dt'
+import { schemaLinkResponse } from './link.swagger'
 import { LinkViewModel } from './view-models/link-view-model'
 
 @ApiTags('Link')
@@ -18,42 +40,69 @@ export class LinkController {
     private updateLink: UpdateLink,
   ) {}
 
+  @UseGuards(OptionalAuthGuard)
   @Post('/generate')
-  // #region swagger
   @ApiOperation({ summary: 'Generate short link' })
-  // #endregion
-  async generate(@Body() body: GenerateHashLinkDto) {
+  @ApiCreatedResponse({
+    description: 'Generate short link',
+    schema: schemaLinkResponse.successGenerated,
+  })
+  @ApiBearerAuth()
+  async generate(
+    @Req() request: RequestWithUser,
+    @Body() body: GenerateHashLinkDto,
+  ) {
+    const userId = request?.user?.idUsuario || null
+
     const { link } = body
 
     const { shortURL } = await this.shortenerLink.execute({
       url: link,
+      userId,
     })
 
-    return { shortURL }
+    return { short_URL: shortURL }
   }
 
-  @Get()
-  // #region swagger
-  @ApiOperation({ summary: 'Gel all links user' })
-  // #endregion
-  async findAll() {
-    const userId = '63f0bc8a-3883-45b6-968d-dde36aa9d6b3'
+  @UseGuards(AuthGuard)
+  @Get('/all')
+  @ApiOperation({ summary: 'Get all links for user' })
+  @ApiOkResponse({
+    description: 'Success get array links',
+    schema: schemaLinkResponse.successGetLinks,
+  })
+  @ApiForbiddenResponse({
+    description: 'Forbidden resource',
+    schema: schemaLinkResponse.forbiddenGetLinks,
+  })
+  @ApiBearerAuth()
+  async findAll(@Req() request: RequestWithUser) {
+    const userId = request.user.idUsuario
+
     const { links } = await this.findAllLinksUser.execute({ userId })
 
     return { links: links.map(LinkViewModel.toHTTP) }
   }
 
-  @Put('/update/:linkId')
-  // #region swagger
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @UseGuards(AuthGuard)
+  @Put('/update/:link_id')
   @ApiOperation({ summary: 'Update link info' })
-  // #endregion
+  @ApiNoContentResponse({
+    description: 'Link updated',
+  })
+  @ApiBearerAuth()
   async updateLinkURL(
-    @Param('linkId') linkId: string,
+    @Req() request: RequestWithUser,
+    @Param('link_id') link_id: string,
     @Body() body: UpdateLinkDto,
   ) {
+    const userId = request.user.idUsuario
+
     await this.updateLink.execute({
-      linkId,
-      urlOrigin: body.urlOrigin,
+      linkId: link_id,
+      urlOrigin: body.origin_url,
+      userId,
     })
   }
 }

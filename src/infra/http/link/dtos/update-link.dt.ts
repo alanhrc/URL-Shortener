@@ -9,5 +9,5 @@ export class UpdateLinkDto {
   })
   @IsNotEmpty()
   @IsString()
-  urlOrigin: string
+  origin_url: string
 }

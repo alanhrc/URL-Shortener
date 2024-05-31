@@ -31,7 +31,11 @@ async function bootstrap() {
     .build()
 
   const document = SwaggerModule.createDocument(app, config)
-  SwaggerModule.setup('docs', app, document)
+  SwaggerModule.setup('docs', app, document, {
+    swaggerOptions: {
+      persistAuthorization: true,
+    },
+  })
 
   const port = configService.get('SERVER_PORT', { infer: true })
   await app.listen(port)

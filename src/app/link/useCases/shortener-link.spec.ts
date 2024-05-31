@@ -7,7 +7,10 @@ describe('Shortener link useCase', () => {
     const shortenerLink = new ShortenerLink(linkRepository)
 
     const link = 'https://www.google.com'
-    const { shortURL } = await shortenerLink.execute({ url: link })
+    const { shortURL } = await shortenerLink.execute({
+      url: link,
+      userId: null,
+    })
 
     expect(shortURL).toBeTruthy()
   })

@@ -14,8 +14,14 @@ export class InMemoryLinkRepository implements LinkRepository {
     return links
   }
 
-  async updateLinkURL(linkId: string, urlOrigin: string): Promise<void> {
-    const linkIndex = this.links.findIndex((item) => item.id === linkId)
+  async updateLinkURL(
+    linkId: string,
+    urlOrigin: string,
+    userId: string,
+  ): Promise<void> {
+    const linkIndex = this.links.findIndex(
+      (item) => item.id === linkId && item.userId === userId,
+    )
 
     if (linkIndex >= 0) {
       this.links[linkIndex].urlOrigin = urlOrigin
@@ -36,5 +42,11 @@ export class InMemoryLinkRepository implements LinkRepository {
     if (linkIndex >= 0) {
       this.links[linkIndex].clicks = this.links[linkIndex].clicks + 1
     }
+  }
+
+  async countByHash(hash: string): Promise<number> {
+    const links = this.links.filter((item) => item.urlHash === hash)
+
+    return links.length
   }
 }

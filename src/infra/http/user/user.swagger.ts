@@ -1,5 +1,5 @@
 export const schemaUserResponse = {
-  user: {
+  successCreated: {
     type: 'object',
     properties: {
       user: {

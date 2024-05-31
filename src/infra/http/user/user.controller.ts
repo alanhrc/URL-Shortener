@@ -18,17 +18,15 @@ export class UserController {
   constructor(private createUser: CreateUser) {}
 
   @Post()
-  // #region swagger
   @ApiOperation({ summary: 'Create user' })
   @ApiCreatedResponse({
     description: 'User info',
-    schema: schemaUserResponse.user,
+    schema: schemaUserResponse.successCreated,
   })
   @ApiConflictResponse({
     description: 'User e-mail already exists',
     schema: schemaUserResponse.conflict,
   })
-  // #endregion
   async create(@Body() body: CreateUserDto) {
     const { name, email, password } = body
 
