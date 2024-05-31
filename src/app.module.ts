@@ -4,7 +4,7 @@ import { ConfigModule } from '@nestjs/config'
 import { AppController } from './app.controller'
 import { AppService } from './app.service'
 import { envSchema } from './config/env'
-import { DatabaseModule } from './infra/database/database.module'
+import { UserModule } from './infra/http/user/user.module'
 
 @Module({
   imports: [
@@ -12,7 +12,7 @@ import { DatabaseModule } from './infra/database/database.module'
       isGlobal: true,
       validate: (env) => envSchema.parse(env),
     }),
-    DatabaseModule,
+    UserModule,
   ],
   controllers: [AppController],
   providers: [AppService],
