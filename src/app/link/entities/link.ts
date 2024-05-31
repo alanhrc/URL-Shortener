@@ -9,6 +9,7 @@ export interface ILinkProps {
   createdAt: Date
   updatedAt?: Date | null
   deletedAt?: Date | null
+  userId?: string | null
 }
 
 export class Link {
@@ -47,7 +48,7 @@ export class Link {
     return this.props.clicks
   }
 
-  public incrementClicks() {
+  public set clicks(_) {
     this.props.clicks = this.clicks + 1
   }
 
@@ -69,5 +70,13 @@ export class Link {
 
   public unBlockLink() {
     this.props.deletedAt = null
+  }
+
+  public get userId(): string | null | undefined {
+    return this.props.userId
+  }
+
+  public set userId(userId: string) {
+    this.props.userId = userId
   }
 }

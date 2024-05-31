@@ -12,6 +12,7 @@ export class PrismaLinkMapper {
       createdAt: link.createdAt,
       updatedAt: link.updatedAt,
       deletedAt: link.deletedAt,
+      userId: link.userId,
     }
   }
 
@@ -24,6 +25,7 @@ export class PrismaLinkMapper {
         createdAt: raw.createdAt,
         updatedAt: raw.updatedAt,
         deletedAt: raw.deletedAt,
+        userId: raw.userId,
       },
       raw.id,
     )

@@ -5,6 +5,7 @@ import { AppController } from './app.controller'
 import { AppService } from './app.service'
 import { envSchema } from './config/env'
 import { AuthModule } from './infra/http/auth/auth.module'
+import { HostModule } from './infra/http/host/host.module'
 import { LinkModule } from './infra/http/link/link.module'
 import { UserModule } from './infra/http/user/user.module'
 
@@ -14,6 +15,7 @@ import { UserModule } from './infra/http/user/user.module'
       isGlobal: true,
       validate: (env) => envSchema.parse(env),
     }),
+    HostModule,
     UserModule,
     AuthModule,
     LinkModule,

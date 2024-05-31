@@ -9,7 +9,6 @@ import { PrismaService } from '../../prisma.service'
 @Injectable()
 export class PrismaLinkRepository implements LinkRepository {
   constructor(private prismaService: PrismaService) {}
-
   async create(link: Link): Promise<void> {
     const raw = PrismaLinkMapper.toPrisma(link)
 
@@ -18,17 +17,57 @@ export class PrismaLinkRepository implements LinkRepository {
     })
   }
 
-  // async findByEmail(email: string): Promise<Link | null> {
-  //   const user = await this.prismaService.user.findUnique({
-  //     where: {
-  //       email,
-  //     },
-  //   })
+  async findAllByUserId(userId: string): Promise<Link[]> {
+    const links = await this.prismaService.link.findMany({
+      where: {
+        userId,
+      },
+    })
 
-  //   if (!user) {
-  //     return null
-  //   }
+    return links.map(PrismaLinkMapper.toDomain)
+  }
 
-  //   return PrismaUserMapper.toDomain(user)
-  // }
+  async updateLinkURL(linkId: string, urlOrigin: string): Promise<void> {
+    await this.prismaService.link.update({
+      where: {
+        id: linkId,
+      },
+      data: {
+        urlOrigin,
+      },
+    })
+  }
+
+  async findByShortLink(shortLink: string): Promise<Link | null> {
+    const link = await this.prismaService.link.findFirst({
+      where: {
+        urlHash: shortLink,
+      },
+    })
+
+    if (!link) {
+      return null
+    }
+
+    return PrismaLinkMapper.toDomain(link)
+  }
+
+  async updateClicks(linkId: string): Promise<void> {
+    const link = await this.prismaService.link.findFirst({
+      where: {
+        id: linkId,
+      },
+    })
+
+    if (link) {
+      await this.prismaService.link.update({
+        where: {
+          id: link.id,
+        },
+        data: {
+          clicks: link.clicks + 1,
+        },
+      })
+    }
+  }
 }

@@ -2,5 +2,8 @@ import { Link } from '../entities/link'
 
 export abstract class LinkRepository {
   abstract create(link: Link): Promise<void>
-  // abstract findByEmail(email: string): Promise<User | null>
+  abstract findAllByUserId(userId: string): Promise<Link[]>
+  abstract updateLinkURL(linkId: string, urlOrigin: string): Promise<void>
+  abstract findByShortLink(shortLink: string): Promise<Link | null>
+  abstract updateClicks(linkId: string): Promise<void>
 }

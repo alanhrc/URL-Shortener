@@ -10,6 +10,14 @@ import { PrismaService } from '../../prisma.service'
 export class PrismaUserRepository implements UserRepository {
   constructor(private prismaService: PrismaService) {}
 
+  async create(user: User): Promise<void> {
+    const raw = PrismaUserMapper.toPrisma(user)
+
+    await this.prismaService.user.create({
+      data: raw,
+    })
+  }
+
   async findByEmail(email: string): Promise<User | null> {
     const user = await this.prismaService.user.findUnique({
       where: {
@@ -22,13 +30,5 @@ export class PrismaUserRepository implements UserRepository {
     }
 
     return PrismaUserMapper.toDomain(user)
-  }
-
-  async create(user: User): Promise<void> {
-    const raw = PrismaUserMapper.toPrisma(user)
-
-    await this.prismaService.user.create({
-      data: raw,
-    })
   }
 }

@@ -24,6 +24,7 @@ export class ShortenerLink {
       urlOrigin: url,
       urlHash: 'hash',
       clicks: 0,
+      userId: '63f0bc8a-3883-45b6-968d-dde36aa9d6b3',
     })
 
     await this.linkRepository.create(newLink)
