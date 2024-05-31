@@ -5,6 +5,7 @@ import { AppController } from './app.controller'
 import { AppService } from './app.service'
 import { envSchema } from './config/env'
 import { AuthModule } from './infra/http/auth/auth.module'
+import { LinkModule } from './infra/http/link/link.module'
 import { UserModule } from './infra/http/user/user.module'
 
 @Module({
@@ -15,6 +16,7 @@ import { UserModule } from './infra/http/user/user.module'
     }),
     UserModule,
     AuthModule,
+    LinkModule,
   ],
   controllers: [AppController],
   providers: [AppService],
