@@ -26,6 +26,9 @@ This application features tools backend development!
 4. The environment preset is development
 5. Run `docker compose up` to start database container and server container<br />
 
+## Open database by Prisma Studio
+6. Run `npx prisma studio` to start database view<br />
+
 <br />
 
 <img src="./assets/home.png" />
