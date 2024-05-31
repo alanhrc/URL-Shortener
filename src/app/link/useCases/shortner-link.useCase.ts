@@ -2,8 +2,8 @@ import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 
 import { Env } from '@/config/env'
-import { GenerateHashURL } from '@/helpers/GenerateHashURL'
 
+import { GenerateHashURL } from '../../..//helpers/GenerateHashURL'
 import { Link } from '../entities/link'
 import { LinkRepository } from '../repositories/link.repository'
 
